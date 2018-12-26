@@ -44,11 +44,13 @@ local Kobo = Generic:new{
 local KoboTrilogy = Kobo:new{
     model = "Kobo_trilogy",
     needsTouchScreenProbe = yes,
+    touch_legacy = true,
     touch_switch_xy = false,
     -- Some Kobo Touch models' kernel does not generate touch event with epoch
     -- timestamp. This flag will probe for those models and setup event adjust
     -- hook accordingly
     touch_probe_ev_epoch_time = true,
+
     hasKeys = yes,
 }
 
@@ -58,6 +60,7 @@ local KoboPixie = Kobo:new{
     display_dpi = 200,
     -- bezel:
     viewport = Geom:new{x=0, y=2, w=596, h=794},
+    touch_legacy = true,
 }
 
 -- Kobo Aura One:
@@ -90,6 +93,7 @@ local KoboDragon = Kobo:new{
     model = "Kobo_dragon",
     hasFrontlight = yes,
     display_dpi = 265,
+    touch_legacy = true,
 }
 
 -- Kobo Glo:
@@ -97,6 +101,7 @@ local KoboKraken = Kobo:new{
     model = "Kobo_kraken",
     hasFrontlight = yes,
     display_dpi = 212,
+    touch_legacy = true,
 }
 
 -- Kobo Aura:
@@ -413,6 +418,10 @@ function Kobo:initEventAdjustHooks()
 
     if self.touch_phoenix_protocol then
         self.input.handleTouchEv = self.input.handleTouchEvPhoenix
+    end
+
+    if self.touch_legacy then
+        self.input.handleTouchEv = self.input.handleTouchEvLegacy
     end
 end
 
