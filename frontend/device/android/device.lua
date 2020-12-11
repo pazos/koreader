@@ -72,7 +72,8 @@ local Device = Generic:new{
     isAndroid = yes,
     model = android.prop.product,
     hasKeys = yes,
-    hasDPad = no,
+    hasDPad = function() return android.isTv() end,
+    isTouchDevice = function() return not android.isTv() end,
     hasExitOptions = no,
     hasEinkScreen = function() return android.isEink() end,
     hasColorScreen = function() return not android.isEink() end,
@@ -215,7 +216,7 @@ function Device:init()
     end
     -- check if we have a touchscreen
     if android.lib.AConfiguration_getTouchscreen(android.app.config)
-       ~= C.ACONFIGURATION_TOUCHSCREEN_NOTOUCH
+       ~= C.ACONFIGURATION_TOUCHSCREEN_NOTOUCH and not android.isTv()
     then
         self.isTouchDevice = yes
     end
