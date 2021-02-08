@@ -1,6 +1,7 @@
 local BD = require("ui/bidi")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local CloudStorage = require("apps/cloudstorage/cloudstorage")
+local CloudProvider = require("cloudproviders")
 local ConfirmBox = require("ui/widget/confirmbox")
 local Device = require("device")
 local Event = require("ui/event")
@@ -509,6 +510,22 @@ function FileManagerMenu:setUpdateItemTable()
             end
         end,
     }
+
+    if CloudProvider:isReady() then
+        --CloudProvider:init()
+        self.menu_items.cloud_providers = {
+            text = _("Cloud provider"),
+            callback = function()
+                local cloud_storage = CloudProvider:new{}
+                UIManager:show(cloud_storage)
+                local filemanagerRefresh = function() self.ui:onRefresh() end
+                function cloud_storage:onClose()
+                    filemanagerRefresh()
+                    UIManager:close(cloud_storage)
+                end
+            end,
+        }
+    end
 
     self.menu_items.find_file = {
         -- @translators Search for files by name.
