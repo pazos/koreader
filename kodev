@@ -160,6 +160,7 @@ SUPPORTED_TARGETS="
     pocketbook
     ubuntu-touch
     appimage
+    linux           Generic Linux package for amd64
     debian          Debian package for current arch
     debian-armel    Debian package for generic armel devices
     debian-armhf    Debian package for generic armhf devices
@@ -288,20 +289,24 @@ ${SUPPORTED_TARGETS}"
             make TARGET=appimage
             assert_ret_zero $?
             ;;
+        linux)
+            make TARGET=linux
+            assert_ret_zero $?
+            ;;
         debian)
-            make TARGET=debian
+            make TARGET=linux
             assert_ret_zero $?
             ;;
         debian-armel)
-            make TARGET=debian-armel
+            make TARGET=linux-armel
             assert_ret_zero $?
             ;;
         debian-armhf)
-            make TARGET=debian-armhf
+            make TARGET=linux-armhf
             assert_ret_zero $?
             ;;
         debian-arm64)
-            make TARGET=debian-arm64
+            make TARGET=linux-arm64
             assert_ret_zero $?
             ;;
         macos)
@@ -409,17 +414,20 @@ ${SUPPORTED_TARGETS}"
         appimage)
             make TARGET=appimage clean
             ;;
+        linux)
+            make TARGET=linux clean
+            ;;
         debian)
-            make TARGET=debian clean
+            make TARGET=linux clean
             ;;
         debian-armel)
-            make TARGET=debian-armel clean
+            make TARGET=linux-armel clean
             ;;
         debian-armhf)
-            make TARGET=debian-armhf clean
+            make TARGET=linux-armhf clean
             ;;
         debian-arm64)
-            make TARGET=debian-arm64 clean
+            make TARGET=linux-arm64 clean
             ;;
         macos)
             is_mac
@@ -566,21 +574,25 @@ ${SUPPORTED_RELEASE_TARGETS}"
             kodev-build appimage
             make TARGET=appimage update
             ;;
+        linux)
+            kodev-build linux
+            make TARGET=linux update
+            ;;
         debian)
-            kodev-build debian
-            make TARGET=debian update
+            kodev-build linux
+            make TARGET=linux update
             ;;
         debian-armel)
-            kodev-build debian-armel
-            make TARGET=debian-armel update
+            kodev-build linux-armel
+            make TARGET=linux-armel update
             ;;
         debian-armhf)
-            kodev-build debian-armhf
-            make TARGET=debian-armhf update
+            kodev-build linux-armhf
+            make TARGET=linux-armhf update
             ;;
         debian-arm64)
-            kodev-build debian-arm64
-            make TARGET=debian-arm64 update
+            kodev-build linux-arm64
+            make TARGET=linux-arm64 update
             ;;
         macos)
             is_mac

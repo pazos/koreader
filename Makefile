@@ -439,6 +439,34 @@ debianupdate: all
 	rm -rf \
 		$(INSTALL_DIR)/debian/usr/lib/koreader/{ota,cache,clipboard,screenshots,spec,tools,resources/fonts,resources/icons/src}
 
+LINUX_PACKAGE:=koreader-linux$(KODEDUG_SUFFIX)-$(VERSION).txz
+linuxupdate: all
+	mkdir -pv \
+		$(INSTALL_DIR)/linux/bin \
+		$(INSTALL_DIR)/linux/lib \
+		$(INSTALL_DIR)/linux/share/pixmaps \
+		$(INSTALL_DIR)/linux/share/applications \
+		$(INSTALL_DIR)/linux/share/doc/koreader \
+		$(INSTALL_DIR)/linux/share/man/man1
+
+	cp -pv resources/koreader.png $(INSTALL_DIR)/linux/share/pixmaps
+	cp -pv $(DEBIAN_DIR)/koreader.desktop $(INSTALL_DIR)/linux/share/applications
+	cp -pv $(DEBIAN_DIR)/copyright COPYING $(INSTALL_DIR)/linux/share/doc/koreader
+	cp -pv $(DEBIAN_DIR)/koreader.sh $(INSTALL_DIR)/linux/bin/koreader
+	cp -Lr $(INSTALL_DIR)/koreader $(INSTALL_DIR)/linux/lib
+
+	gzip -cn9 $(DEBIAN_DIR)/koreader.1 > $(INSTALL_DIR)/linux/share/man/man1/koreader.1.gz
+
+	chmod 644 \
+		$(INSTALL_DIR)/linux/share/doc/koreader/copyright \
+		$(INSTALL_DIR)/linux/share/man/man1/koreader.1.gz
+
+	rm -rf \
+		$(INSTALL_DIR)/linux/lib/koreader/{ota,cache,clipboard,screenshots,spec,tools,resources/fonts,resources/icons/src}
+
+	cd $(INSTALL_DIR)/linux && \
+		tar -cJf ../../$(LINUX_PACKAGE) *
+
 macosupdate: all
 	mkdir -p \
 		$(INSTALL_DIR)/bundle/Contents/MacOS \
@@ -560,6 +588,8 @@ else ifeq ($(TARGET), remarkable)
 	make remarkableupdate
 else ifeq ($(TARGET), ubuntu-touch)
 	make utupdate
+else ifeq ($(TARGET), linux)
+	make linuxupdate
 else ifeq ($(TARGET), debian)
 	make debianupdate
 	$(CURDIR)/platform/debian/do_debian_package.sh $(INSTALL_DIR)
