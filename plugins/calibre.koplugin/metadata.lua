@@ -12,7 +12,6 @@ local TimeVal = require("ui/timeval")
 local lfs = require("libs/libkoreader-lfs")
 local rapidjson = require("rapidjson")
 local logger = require("logger")
-local parser = require("parser")
 local util = require("util")
 
 local used_metadata = {
@@ -122,7 +121,13 @@ function CalibreMetadata:loadBookList()
     end
     local books, err
     if attr.size > MAX_JSON_FILESIZE then
+        local parser = require("parser")
         books, err = parser.parseFile(self.metadata)
+        -- the parser might fail: https://github.com/koreader/koreader/issues/7790
+        -- fallback to JSON when that happens.
+        if not books then
+            books, err = rapidjson.load(self.metadata)
+        end
     else
         books, err = rapidjson.load(self.metadata)
     end
